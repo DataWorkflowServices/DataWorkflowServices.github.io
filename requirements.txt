@@ -1,0 +1,2 @@
+mkdocs-section-index
+mkdocs-macros-plugin
