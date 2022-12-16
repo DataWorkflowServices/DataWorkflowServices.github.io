@@ -8,7 +8,7 @@ nav:
   #- About: about.md
   - 'User Guides':
     - guides/index.md
-    - 'CSM Install': 'guides/csm-install/readme.md'
+    - 'DWS on CSM': 'guides/dws-on-csm/readme.md'
 theme:
   name: 'material'
 #  logo: img/logo.png
