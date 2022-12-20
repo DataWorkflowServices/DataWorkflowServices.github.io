@@ -156,7 +156,8 @@ srun -l /bin/hostname
 srun -l /bin/pwd
 ```
 
-Note that we will submit the test job from a directory where our `vers` account can write its output files.
+Note that we will submit the test job from a directory where our `vers` account can write its output files.  The output file location can be controlled by the `sbatch` command or by an `SBATCH` directive in the job script.
+
 
 ```console title="vers@uan01:/lus/vers>"
 sbatch /tmp/dws-test
@@ -167,10 +168,11 @@ The sbatch command will tell you the ID of your job.
 Submitted batch job 7773
 ```
 
-You can use that to query the job's status.  The job's output will be in the file named `slurm-<ID>`.
+You can use that to query the job's status.  In this example the job's output will be in the file named `slurm-<ID>` in the same directory where the `sbatch` command was executed.
 
 ```console title="vers@uan01:/lus/vers> "
 sacct -b -j 7773
+scontrol show job 7773
 cat slurm-7773.out
 ```
 
