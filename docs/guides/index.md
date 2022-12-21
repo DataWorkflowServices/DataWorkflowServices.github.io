@@ -2,4 +2,4 @@
 
 ## Setup
 
-* [CSM Install](csm-install/readme.md)
+* [DWS on CSM](dws-on-csm/readme.md)
