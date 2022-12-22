@@ -9,6 +9,8 @@ nav:
   - 'User Guides':
     - guides/index.md
     - 'DWS on CSM': 'guides/dws-on-csm/readme.md'
+  - 'Repo Admin Guides':
+    - 'Create a Release': 'repo-guides/create-a-release/readme.md'
 theme:
   name: 'material'
 #  logo: img/logo.png
