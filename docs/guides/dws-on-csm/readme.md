@@ -190,6 +190,14 @@ desiredState=DataIn currentState=DataIn status=Completed
 
 Note that the workflow resource will no longer exist after Slurm has completed its teardown state for this job.
 
+## Canceling a test job
+
+Use of the `scancel` command in states prior to PostRun will cause Slurm to pass the `hurry` flag to the teardown function in the burst_buffer.lua script, and the teardown function will set the flag in the Workflow resource.  In the PostRun or DataOut states the burst_buffer.lua teardown function will not be passed the `hurry` flag because no work will be skipped.  In all states, the `scancel --hurry` command will cause Slurm to pass the `hurry` flag to the teardown function.
+
+The `scancel` command will cause states prior to PostRun to terminate immediately and proceed to Teardown state.  The use of `scancel --hurry` does not alter this behavior on these pre-PostRun states.  During PostRun or DataOut, the `scancel` command does not cause early termination and does not skip the DataOut state.  The use of `scancel --hurry` during PostRun or DataOut causes early termination, skipping DataOut in the case of PostRun, and proceeds to Teardown.
+
+Consult the [Slurm Burst Buffer Guide](https://slurm.schedmd.com/burst_buffer.html) for further details on the use of `scancel` versus `scancel --hurry`.
+
 ## Troubleshooting
 
 ### Collect slurmctld logs
@@ -257,4 +265,10 @@ workflows.argoproj.io                            2022-11-25T02:56:48Z
 workflows.dws.cray.hpe.com                       2022-11-21T15:38:13Z
 ```
 </details>
+
+## References
+
+* Section 10.3.2 of [HPE Cray Programming Environment Installation Guide: CSM on HPE Cray EX Systems (22.10) S-8003](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00126783en_us)
+* [Slurm Burst Buffer Guide](https://slurm.schedmd.com/burst_buffer.html) 
+* [Slurm burst_buffer.conf manage](https://slurm.schedmd.com/burst_buffer.conf.html)
 
