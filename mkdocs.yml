@@ -1,11 +1,11 @@
 site_name: DWS
 site_description: 'DataWorkflowServices'
 docs_dir: docs/
-repo_name: GitHub
+repo_name: 'DataWorkflowServices/DataWorkflowServices.github.io'
 repo_url: https://github.com/DataWorkflowServices/DataWorkflowServices.github.io
+copyright: '&copy; Copyright 2023 Hewlett Packard Enterprise Development LP'
 nav:
   - Home: index.md
-  #- About: about.md
   - 'User Guides':
     - guides/index.md
     - 'DWS on CSM': 'guides/dws-on-csm/readme.md'
@@ -13,12 +13,27 @@ nav:
     - 'Create a Release': 'repo-guides/create-a-release/readme.md'
 theme:
   name: 'material'
-#  logo: img/logo.png
-#  favicon: img/logo.png
+  custom_dir: overrides
+  features:
+    - content.code.copy
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
 plugins:
-  - search
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
   - macros
   - section-index
+extra:
+  version:
+    provider: mike
+    default: latest
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
