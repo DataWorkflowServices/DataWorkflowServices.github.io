@@ -28,14 +28,14 @@ The DWS Configuration is in the DWS repo.  We don't need to build DWS here, but 
 
 ```console title="ncn-m001:~ #"
 DWS_VER=0.0.11
-git clone --branch v$DWS_VER https://github.com/HewlettPackard/dws.git
+git clone --branch v$DWS_VER https://github.com/DataWorkflowServices/dws.git
 cd dws
 ```
 
 Get the DWS container image corresponding to this repo.  This must be made present in the cluster's container registry.
 
 ```console title="ncn-m001:~/dws #"
-podman run --rm --network host quay.io/skopeo/stable:v1.4.1 copy --dest-tls-verify=false docker://ghcr.io/hewlettpackard/dws:$DWS_VER docker://registry.local/dws:$DWS_VER
+podman run --rm --network host quay.io/skopeo/stable:v1.4.1 copy --dest-tls-verify=false docker://ghcr.io/dataworkflowservices/dws:$DWS_VER docker://registry.local/dws:$DWS_VER
 ```
 
 ### Deploy DWS to the cluster
