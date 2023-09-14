@@ -19,11 +19,7 @@ Install the DWS dependencies and set the expected node labels prior to installin
 podman run --rm --network host quay.io/skopeo/stable:v1.4.1 copy --dest-tls-verify=false docker://gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0 docker://registry.local/kube-rbac-proxy:v0.13.0
 ```
 
-DWS will be deployed on a kubernetes worker node labeled with `cray.wlm.manager`.
-
-```console title="ncn-m001:~ #"
-kubectl label node ncn-w001 cray.wlm.manager=true
-```
+In the past, we asked that a worker node be labelled with `cray.wlm.manager`.  DWS no longer uses this label, and you may remove it.
 </details>
 
 ### Retrieve DWS Configuration and Container Image
@@ -31,15 +27,15 @@ kubectl label node ncn-w001 cray.wlm.manager=true
 The DWS Configuration is in the DWS repo.  We don't need to build DWS here, but we do need its configuration files from the repo.  This is where we will get the DWS CRDs, Deployment, ServiceAccount, Roles and bindings, Services, and Secrets.
 
 ```console title="ncn-m001:~ #"
-DWS_VER=0.0.6
-git clone --branch v$DWS_VER https://github.com/HewlettPackard/dws.git
+DWS_VER=0.0.11
+git clone --branch v$DWS_VER https://github.com/DataWorkflowServices/dws.git
 cd dws
 ```
 
 Get the DWS container image corresponding to this repo.  This must be made present in the cluster's container registry.
 
 ```console title="ncn-m001:~/dws #"
-podman run --rm --network host quay.io/skopeo/stable:v1.4.1 copy --dest-tls-verify=false docker://ghcr.io/hewlettpackard/dws:$DWS_VER docker://registry.local/dws:$DWS_VER
+podman run --rm --network host quay.io/skopeo/stable:v1.4.1 copy --dest-tls-verify=false docker://ghcr.io/dataworkflowservices/dws:$DWS_VER docker://registry.local/dws:$DWS_VER
 ```
 
 ### Deploy DWS to the cluster
@@ -50,10 +46,11 @@ Deploy DWS to the cluster.  Set `IMAGE_TAG_BASE` to point at the DWS image in th
 IMAGE_TAG_BASE=registry.local/dws OVERLAY=csm make deploy
 ```
 
-Wait for the deployment to become ready.
+Wait for the deployment and webhook to become ready.
 
 ```console title="ncn-m001:~/dws #"
-kubectl wait deployment --timeout=60s -n dws-operator-system --for condition=Available=True dws-operator-controller-manager
+kubectl wait deployment --timeout=120s -n dws-operator-system dws-operator-controller-manager --for condition=Available=True
+kubectl wait deployment --timeout=120s -n dws-operator-system dws-operator-webhook --for condition=Available=True
 ```
 
 To undeploy DWS, after all Workflow resources have been deleted:
