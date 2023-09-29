@@ -1,0 +1,1248 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="DataWorkflowServices">
+      
+      
+      
+      
+        <link rel="prev" href="../../">
+      
+      
+        <link rel="next" href="../../errors/readme/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.2">
+    
+    
+      
+        <title>DWS on CSM - DWS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.d451bc0e.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dws-on-csm-installation-and-use-of-dws-on-a-csm-cluster" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+  You're not viewing the latest version.
+  <a href="../../../.."> 
+    <strong>Click here to go to latest.</strong>
+  </a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="DWS" class="md-header__button md-logo" aria-label="DWS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DWS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DWS on CSM
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DataWorkflowServices/DataWorkflowServices.github.io" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DataWorkflowServices/DataWorkflowServices.github.io
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="../../" class="md-tabs__link">
+        
+  
+    
+  
+  User Guides
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../repo-guides/create-a-release/readme/" class="md-tabs__link">
+          
+  
+  Repo Admin Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="DWS" class="md-nav__button md-logo" aria-label="DWS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    DWS
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DataWorkflowServices/DataWorkflowServices.github.io" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DataWorkflowServices/DataWorkflowServices.github.io
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    User Guides
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            User Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    DWS on CSM
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    DWS on CSM
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-for-install-or-upgrade-of-dws" class="md-nav__link">
+    Prepare For Install Or Upgrade of DWS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-dws" class="md-nav__link">
+    Install DWS
+  </a>
+  
+    <nav class="md-nav" aria-label="Install DWS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retrieve-dws-configuration-and-container-image" class="md-nav__link">
+    Retrieve DWS Configuration and Container Image
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-the-dws-container-images" class="md-nav__link">
+    Load the DWS Container Images
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-dws-to-the-cluster" class="md-nav__link">
+    Deploy DWS to the cluster
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#undeploy-dws" class="md-nav__link">
+    Undeploy DWS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rbac-role-based-access-control" class="md-nav__link">
+    RBAC: Role-Based Access Control
+  </a>
+  
+    <nav class="md-nav" aria-label="RBAC: Role-Based Access Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rbac-for-burst-buffer-plugin" class="md-nav__link">
+    RBAC for Burst Buffer Plugin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-a-key-and-certificate" class="md-nav__link">
+    Generate a Key and Certificate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-kubeconfig" class="md-nav__link">
+    Create a kubeconfig
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-the-provided-clusterrole-and-create-a-clusterrolebinding" class="md-nav__link">
+    Apply the provided ClusterRole and create a ClusterRoleBinding
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-slurm-for-dws" class="md-nav__link">
+    Configure Slurm for DWS
+  </a>
+  
+    <nav class="md-nav" aria-label="Configure Slurm for DWS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checkout-the-dws-slurm-burst-buffer-plugin-repo" class="md-nav__link">
+    Checkout the DWS Slurm Burst Buffer Plugin repo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-the-burst-buffer-plugin" class="md-nav__link">
+    Install the burst buffer plugin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-the-burst-buffer-plugin" class="md-nav__link">
+    Enable the burst buffer plugin
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-to-submit-a-test-job" class="md-nav__link">
+    Prepare to submit a test job
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#submit-a-test-job" class="md-nav__link">
+    Submit a test job
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canceling-a-test-job" class="md-nav__link">
+    Canceling a test job
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collect-slurmctld-logs" class="md-nav__link">
+    Collect slurmctld logs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collect-dws-logs" class="md-nav__link">
+    Collect DWS logs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspect-dws-workflow-resources" class="md-nav__link">
+    Inspect DWS Workflow resources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../errors/readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Workflow Errors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Repo Admin Guides
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Repo Admin Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../repo-guides/create-a-release/readme/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Create a Release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-for-install-or-upgrade-of-dws" class="md-nav__link">
+    Prepare For Install Or Upgrade of DWS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-dws" class="md-nav__link">
+    Install DWS
+  </a>
+  
+    <nav class="md-nav" aria-label="Install DWS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retrieve-dws-configuration-and-container-image" class="md-nav__link">
+    Retrieve DWS Configuration and Container Image
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-the-dws-container-images" class="md-nav__link">
+    Load the DWS Container Images
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-dws-to-the-cluster" class="md-nav__link">
+    Deploy DWS to the cluster
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#undeploy-dws" class="md-nav__link">
+    Undeploy DWS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rbac-role-based-access-control" class="md-nav__link">
+    RBAC: Role-Based Access Control
+  </a>
+  
+    <nav class="md-nav" aria-label="RBAC: Role-Based Access Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rbac-for-burst-buffer-plugin" class="md-nav__link">
+    RBAC for Burst Buffer Plugin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-a-key-and-certificate" class="md-nav__link">
+    Generate a Key and Certificate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-kubeconfig" class="md-nav__link">
+    Create a kubeconfig
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-the-provided-clusterrole-and-create-a-clusterrolebinding" class="md-nav__link">
+    Apply the provided ClusterRole and create a ClusterRoleBinding
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-slurm-for-dws" class="md-nav__link">
+    Configure Slurm for DWS
+  </a>
+  
+    <nav class="md-nav" aria-label="Configure Slurm for DWS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checkout-the-dws-slurm-burst-buffer-plugin-repo" class="md-nav__link">
+    Checkout the DWS Slurm Burst Buffer Plugin repo
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-the-burst-buffer-plugin" class="md-nav__link">
+    Install the burst buffer plugin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable-the-burst-buffer-plugin" class="md-nav__link">
+    Enable the burst buffer plugin
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-to-submit-a-test-job" class="md-nav__link">
+    Prepare to submit a test job
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#submit-a-test-job" class="md-nav__link">
+    Submit a test job
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canceling-a-test-job" class="md-nav__link">
+    Canceling a test job
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collect-slurmctld-logs" class="md-nav__link">
+    Collect slurmctld logs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collect-dws-logs" class="md-nav__link">
+    Collect DWS logs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspect-dws-workflow-resources" class="md-nav__link">
+    Inspect DWS Workflow resources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="dws-on-csm-installation-and-use-of-dws-on-a-csm-cluster">DWS On CSM: Installation and use of DWS on a CSM cluster</h1>
+<p>DataWorkflowServices (DWS) on CSM consists of two parts.  The first part is the DWS service itself, which must be installed on the CSM cluster.  The second part is the Slurm Burst Buffer Plugin which must be installed on the system where Slurm is running. The Burst Buffer Plugin is used by Slurm to talk to the DWS API.</p>
+<h2 id="prepare-for-install-or-upgrade-of-dws">Prepare For Install Or Upgrade of DWS</h2>
+<p>If DWS is not yet installed on the CSM cluster, then proceed to the <strong>Install DWS</strong> section.</p>
+<p>If DWS is already installed on the CSM cluster then that version must be undeployed before the next version can be installed.  This is necessary to properly handle updates to the DWS Custom Resource Definitions (CRDs).  Proceed to the <strong>Undeploy DWS</strong> section before returning here to install the new version.</p>
+<h2 id="install-dws">Install DWS</h2>
+<h3 id="retrieve-dws-configuration-and-container-image">Retrieve DWS Configuration and Container Image</h3>
+<p>The DWS Configuration is in the DWS repo.  It is not necessary to build DWS, but this is where its configuration files will be found.  These include the DWS CRDs, Deployment, ServiceAccount, Roles and bindings, Services, and Secrets.</p>
+<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">DWS_VER=0.0.14</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">git clone --branch v$DWS_VER https://github.com/DataWorkflowServices/dws.git dws-$DWS_VER</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">cd dws-$DWS_VER</span>
+</code></pre></div>
+<p>This workarea must be preserved.  It will be used again when this version of DWS must be undeployed.</p>
+<h3 id="load-the-dws-container-images">Load the DWS Container Images</h3>
+<p>DWS uses two container images which must be loaded into the CSM cluster's container registry. The Nexus Admin Credential will be used to push these images into the registry.</p>
+<p>Obtain the Nexus Admin user name.  Store it in a variable to be used in later commandlines:</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">NEXUS_USER=$(kubectl get secret -n nexus nexus-admin-credential -o json | jq .data.username -r | base64 -d)</span>
+</code></pre></div>
+<p>Obtain the Nexus Admin password.  Keep this output available so it can be used with cut-and-paste when podman requests the password:</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="go">kubectl get secret -n nexus nexus-admin-credential -o json | jq .data.password -r | base64 -d</span>
+</code></pre></div>
+<p>Use the Nexus Admin user name and password to load the container images into the container registry.  Adjust or replace the following <code>podman pull</code> commands as necessary, depending on your network restrictions, to copy each container in from <code>ghcr.io</code>.</p>
+<p>Get the DWS container image corresponding to this repo:</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="go">podman pull ghcr.io/dataworkflowservices/dws:$DWS_VER</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">podman tag ghcr.io/dataworkflowservices/dws:$DWS_VER registry.local/dws:$DWS_VER</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="go">podman push --creds $NEXUS_USER registry.local/dws:$DWS_VER</span>
+</code></pre></div>
+<p>Get the kube-rbac-proxy container:</p>
+<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="go">podman pull docker://gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">podman tag gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0 registry.local/kube-rbac-proxy:v0.13.0</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="go">podman push --creds $NEXUS_USER registry.local/kube-rbac-proxy:v0.13.0</span>
+</code></pre></div>
+<h3 id="deploy-dws-to-the-cluster">Deploy DWS to the cluster</h3>
+<p>Deploy DWS to the cluster:</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="go">kubectl apply -k config/csm</span>
+</code></pre></div>
+<p>Wait for the deployment and webhook to become ready.</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="go">kubectl wait deployment --timeout=120s -n dws-system dws-controller-manager --for condition=Available=True</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="go">kubectl wait deployment --timeout=120s -n dws-system dws-webhook --for condition=Available=True</span>
+</code></pre></div>
+<h2 id="undeploy-dws">Undeploy DWS</h2>
+<p>All Slurm jobs must be completed before DWS can be undeployed.  In addition, all DWS Workflow resources must have been deleted.</p>
+<p>Use the same workarea that was used to install DWS.  It should still be set to the same version of DWS that will be undeployed.</p>
+<p>Confirm that all DWS Workflow resources have been deleted:</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="go">kubectl get workflows.dataworkflowservices.github.io -A</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="go">No resources found</span>
+</code></pre></div>
+<p>If any workflows remain, then some Slurm jobs are not yet completed.  All Slurm jobs must be completed before DWS can be undeployed.</p>
+<p>To undeploy DWS:</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="go">kubectl delete -k config/csm</span>
+</code></pre></div>
+<p>Ignore any errors about not finding secrets.  They were removed by garbage collection during earlier steps in the processing of <code>kubectl delete</code>.</p>
+<h2 id="rbac-role-based-access-control">RBAC: Role-Based Access Control</h2>
+<p>RBAC (Role Based Access Control) determines the operations a user or service can perform on a list of Kubernetes resources. RBAC affects everything that interacts with the kube-apiserver (both users and services internal or external to the cluster). More information about RBAC can be found in the Kubernetes <a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/"><strong><em>documentation</em></strong></a>.</p>
+<p>This is a Slurm-specific version of the instructions found in <a href="https://nearnodeflash.github.io/guides/rbac-for-users/readme/">RBAC: Role-Based Access Control</a> for interacting with DWS. Consult that document for more details.</p>
+<h3 id="rbac-for-burst-buffer-plugin">RBAC for Burst Buffer Plugin</h3>
+<p>A workload manager (WLM) such as Slurm will interact with DataWorkflowServices as a privileged user. RBAC is used to limit the operations that a WLM can perform:</p>
+<ul>
+<li>Generate a new key/cert pair for a "slurm-dws" user</li>
+<li>Creating a new kubeconfig file</li>
+<li>Adding RBAC rules for the "slurm-dws" user to allow appropriate access to the DataWorkflowServices API.</li>
+</ul>
+<p><strong>Note</strong> Each of these steps must be performed on the CSM management node.</p>
+<h3 id="generate-a-key-and-certificate">Generate a Key and Certificate</h3>
+<p>The first step is to create a new key and certificate for the "slurm-dws" user.  This will likely be done on one of the CSM management nodes. The <code>openssl</code> command needs access to the certificate authority file. This is typically located in <code>/etc/kubernetes/pki</code>.</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp"># </span>make<span class="w"> </span>a<span class="w"> </span>temporary<span class="w"> </span>work<span class="w"> </span>space
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="go">mkdir /tmp/slurm-dws</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">cd /tmp/slurm-dws</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="gp"># </span>Create<span class="w"> </span>this<span class="w"> </span>user
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="go">export USERNAME=slurm-dws</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="gp"># </span>generate<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>key
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="go">openssl genrsa -out slurm-dws.key 2048</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="gp"># </span>create<span class="w"> </span>a<span class="w"> </span>certificate<span class="w"> </span>signing<span class="w"> </span>request<span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>user
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="go">openssl req -new -key slurm-dws.key -out slurm-dws.csr -subj &quot;/CN=$USERNAME&quot;</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="gp"># </span>generate<span class="w"> </span>a<span class="w"> </span>certificate<span class="w"> </span>using<span class="w"> </span>the<span class="w"> </span>certificate<span class="w"> </span>authority<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>k8s<span class="w"> </span>cluster.<span class="w"> </span>This<span class="w"> </span>certificate<span class="w"> </span>lasts<span class="w"> </span><span class="m">500</span><span class="w"> </span>days
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="go">openssl x509 -req -in slurm-dws.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out slurm-dws.crt -days 500</span>
+</code></pre></div>
+<h3 id="create-a-kubeconfig">Create a kubeconfig</h3>
+<p>After the keys have been generated, a new kubeconfig file can be created for this user. The admin kubeconfig <code>/etc/kubernetes/admin.conf</code> can be used to determine the cluster name kube-apiserver address.</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gp"># </span>get<span class="w"> </span>the<span class="w"> </span>cluster<span class="w"> </span>name<span class="w"> </span>and<span class="w"> </span>server
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="go">CURRENT_CONTEXT=$(kubectl config current-context)</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="go">CLUSTER_NAME=$(kubectl config get-contexts | grep $CURRENT_CONTEXT | awk &#39;{print $3}&#39;)</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="go">SERVER=$(kubectl config view -o jsonpath=&#39;{.clusters[?(@.name == &quot;&#39;$CLUSTER_NAME&#39;&quot;)].cluster.server}&#39;)</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="gp"># </span>create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>kubeconfig<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>server<span class="w"> </span>information
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="go">kubectl config set-cluster $CLUSTER_NAME --kubeconfig=slurm-dws.kubeconfig --server=$SERVER --certificate-authority=/etc/kubernetes/pki/ca.crt --embed-certs=true</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="gp"># </span>add<span class="w"> </span>the<span class="w"> </span>key<span class="w"> </span>and<span class="w"> </span>cert<span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>user<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>config
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="go">kubectl config set-credentials $USERNAME --kubeconfig=slurm-dws.kubeconfig --client-certificate=slurm-dws.crt --client-key=slurm-dws.key --embed-certs=true</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="gp"># </span>add<span class="w"> </span>a<span class="w"> </span>context
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="go">kubectl config set-context $USERNAME --kubeconfig=slurm-dws.kubeconfig --cluster=$CLUSTER_NAME --user=$USERNAME</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="gp"># </span>make<span class="w"> </span>it<span class="w"> </span>the<span class="w"> </span>default<span class="w"> </span>context
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="go">kubectl config use-context $USERNAME --kubeconfig slurm-dws.kubeconfig</span>
+</code></pre></div>
+<p><strong>Important</strong> This new kubeconfig file must be installed as <code>/etc/slurm/slurm-dws.kubeconfig</code> on the system that has slurmctld and the burst buffer plugin.</p>
+<h3 id="apply-the-provided-clusterrole-and-create-a-clusterrolebinding">Apply the provided ClusterRole and create a ClusterRoleBinding</h3>
+<p>DataWorkflowServices has already defined the role to be used with WLMs.  Simply apply the <code>workload-manager</code> ClusterRole from DataWorkflowServices to the system, found in the dws repo that was checked out earlier:</p>
+<div class="highlight"><span class="filename">ncn-m001:~/dws #</span><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="go">kubectl apply -f config/rbac/workload_manager_role.yaml</span>
+</code></pre></div>
+<p>Create and apply a ClusterRoleBinding to associate the "slurm-dws" user with the <code>workload-manager</code> ClusterRole:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nn">---</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io/v1</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterRoleBinding</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nt">metadata</span><span class="p">:</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slurm-dws-viewer</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="nt">subjects</span><span class="p">:</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">User</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slurm-dws</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="nt">roleRef</span><span class="p">:</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterRole</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workload-manager</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rbac.authorization.k8s.io</span>
+</code></pre></div>
+<p>That resource can be created using the <code>kubectl apply</code> command.</p>
+<h2 id="configure-slurm-for-dws">Configure Slurm for DWS</h2>
+<p>Slurm provides an API for burst buffer plugins that it uses to talk to a workload manager (WLM).  The plugin is written in the Lua programming language and is placed in the same directory that holds the rest of the Slurm configuration files.  This plugin contains the logic required to communicate with DWS.</p>
+<p>This project will install two files into the slurm pod's <code>/etc/slurm</code> directory and will update the main Slurm configuration file to enable the plugin.  The first will be the Lua plugin script, named <code>burst_buffer.lua</code>, and the second will be a configuration file named <code>burst_buffer.conf</code> which tells Slurm that job scripts containing a <code>#DW</code> directive should be run through the burst_buffer plugin.</p>
+<p>The burst buffer plugin will use the <code>kubectl</code> command to access the Kubernetes environment where DWS is running, so the system running the slurmctld must have this command and a valid <code>kubeconfig</code> file installed as <code>/etc/slurm/slurm-dws.kubeconfig</code>. See <a href="#rbac-role-based-access-control">RBAC: Role-Based Access Control</a> above for the creation of this kubeconfig file.</p>
+<h3 id="checkout-the-dws-slurm-burst-buffer-plugin-repo">Checkout the DWS Slurm Burst Buffer Plugin repo</h3>
+<p>On the Slurm system running slurmctl, check out the repo containing the burst buffer plugin and its configuration file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="go">BBPLUGIN_VER=0.0.2</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="go">git clone --branch v$BBPLUGIN_VER https://github.com/DataWorkflowServices/dws-slurm-bb-plugin.git dws-slurm-bb-plugin-$BBPLUGIN_VER</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="go">cd dws-slurm-bb-plugin-$BBPLUGIN_VER</span>
+</code></pre></div>
+<h3 id="install-the-burst-buffer-plugin">Install the burst buffer plugin</h3>
+<p>Copy the burst buffer plugin and its configuration file into the Slurm configuration directory from the repo you've checked out above:</p>
+<div class="highlight"><span class="filename">~/dws-slurm-bb-plugin #</span><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="go">cp src/burst_buffer/burst_buffer.lua /etc/slurm</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="go">cp src/burst_buffer/burst_buffer.conf /etc/slurm</span>
+</code></pre></div>
+<h3 id="enable-the-burst-buffer-plugin">Enable the burst buffer plugin</h3>
+<p>On the system running slurmctld, edit <code>/etc/slurm/slurm.conf</code> to enable the use of the burst buffer plugin.</p>
+<div class="highlight"><span class="filename">~/dws-slurm-bb-plugin #</span><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="go">echo &quot;BurstBufferType=burst_buffer/lua&quot; &gt;&gt; /etc/slurm/slurm.conf</span>
+</code></pre></div>
+<p>Then restart slurmctld to pick up the new configuration.</p>
+<h2 id="prepare-to-submit-a-test-job">Prepare to submit a test job</h2>
+<p>From the Slurm system that has slurmctld, where the burst buffer plugin will run, verify that the <code>/etc/slurm/slurm-dws.kubeconfig</code> file that was created earlier is available by verifying that it can be used to reach the DWS API:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="go">kubectl --kubeconfig /etc/slurm/slurm-dws.kubeconfig get workflows.dataworkflowservices.github.io -A</span>
+</code></pre></div>
+<p>There should be no workflows and you should see only the following output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="go">No resources found</span>
+</code></pre></div>
+<h2 id="submit-a-test-job">Submit a test job</h2>
+<p>Create the following example test job:</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">$ cat /tmp/dws-test</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span>
+<span class="normal"><a href="#__codelineno-18-2">2</a></span>
+<span class="normal"><a href="#__codelineno-18-3">3</a></span>
+<span class="normal"><a href="#__codelineno-18-4">4</a></span>
+<span class="normal"><a href="#__codelineno-18-5">5</a></span>
+<span class="normal"><a href="#__codelineno-18-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1"></a>#!/bin/sh                
+<a id="__codelineno-18-2" name="__codelineno-18-2"></a>#SBATCH --time=1
+<a id="__codelineno-18-3" name="__codelineno-18-3"></a>#DW
+<a id="__codelineno-18-4" name="__codelineno-18-4"></a>/bin/hostname
+<a id="__codelineno-18-5" name="__codelineno-18-5"></a>srun -l /bin/hostname
+<a id="__codelineno-18-6" name="__codelineno-18-6"></a>srun -l /bin/pwd
+</code></pre></div></td></tr></table></div>
+<p>Submit the test job:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="go">sbatch /tmp/dws-test</span>
+</code></pre></div>
+<p>Get the DWS Workflow via <code>kubectl</code>, running from the Slurm system that has slurmctld.  If this step fails then return to <a href="#prepare-to-submit-a-test-job">Prepare to submit a test job</a> to verify the correct kubectl configuration.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="go">kubectl --kubeconfig /etc/slurm/slurm-dws.kubeconfig get workflows.dataworkflowservices.github.io -A</span>
+</code></pre></div>
+<p>Get the status of the DWS Workflow via <code>scontrol</code>.  This will cause Slurm to use the burst buffer plugin to access the DWS API, and will use <code>kubectl</code> under the covers:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="go">scontrol show bbstat workflow 7773 &amp;&amp; echo</span>
+</code></pre></div>
+<p>The output will appear as:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="go">desiredState=DataIn currentState=DataIn status=Completed</span>
+</code></pre></div>
+<p>Note that the workflow resource will no longer exist after Slurm has completed its teardown state for this job.</p>
+<h2 id="canceling-a-test-job">Canceling a test job</h2>
+<p>Use of the <code>scancel</code> command in states prior to PostRun will cause Slurm to pass the <code>hurry</code> flag to the teardown function in the burst_buffer.lua script, and the teardown function will set the flag in the Workflow resource.  In the PostRun or DataOut states the burst_buffer.lua teardown function will not be passed the <code>hurry</code> flag because no work will be skipped.  In all states, the <code>scancel --hurry</code> command will cause Slurm to pass the <code>hurry</code> flag to the teardown function.</p>
+<p>The <code>scancel</code> command will cause states prior to PostRun to terminate immediately and proceed to Teardown state.  The use of <code>scancel --hurry</code> does not alter this behavior on these pre-PostRun states.  During PostRun or DataOut, the <code>scancel</code> command does not cause early termination and does not skip the DataOut state.  The use of <code>scancel --hurry</code> during PostRun or DataOut causes early termination, skipping DataOut in the case of PostRun, and proceeds to Teardown.</p>
+<p>Consult the <a href="https://slurm.schedmd.com/burst_buffer.html">Slurm Burst Buffer Guide</a> for further details on the use of <code>scancel</code> versus <code>scancel --hurry</code>.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="collect-slurmctld-logs">Collect slurmctld logs</h3>
+<p>To pick out the burst buffer plugin messages from slurmctld logs, grep for the string "lua".</p>
+<h3 id="collect-dws-logs">Collect DWS logs</h3>
+<p>The DWS logs can be retrieved with the following.  These commands should be run from the CSM management node.  Run the <code>kubectl</code> command using the adminstrator context:</p>
+<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="go">DWS_POD=`kubectl --context kubernetes-admin@kubernetes get pods -n dws-system -l control-plane=controller-manager -o jsonpath=&#39;{.items[0].metadata.name}&#39;`</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="go">kubectl --context kubernetes-admin@kubernetes logs -n dws-system $DWS_POD -c manager</span>
+</code></pre></div>
+<h3 id="inspect-dws-workflow-resources">Inspect DWS Workflow resources</h3>
+<p>Inspect DWS Workflow resources by using the fully-qualified CRD name.</p>
+<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="go">kubectl --context kubernetes-admin@kubernetes get workflows.dataworkflowservices.github.io -A</span>
+</code></pre></div>
+<p>The output will show the job ID used in the name of the Workflow resource:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="go">NAMESPACE   NAME     STATE    READY   STATUS      AGE</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="go">user        bb7773   DataIn   true    Completed   13m</span>
+</code></pre></div>
+<p>To get more detail about the workflow while it exists:</p>
+<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="go">kubectl --context kubernetes-admin@kubernetes get workflow.dataworkflowservices.github.io -n user bb7773 -o yaml</span>
+</code></pre></div>
+<p>Note that the Workflow resource will be deleted during the job's teardown state, at which time it will no longer appear in the workflow listing.</p>
+<details>
+<summary>Multiple CRDs named "Workflow"</summary>
+    The fully-qualified name will protect you from picking up any resource named "Workflow" that belongs to some other service.
+
+Your system may have multiple CRDs named "Workflow".  To see the CRDs named "Workflow":
+
+<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="go">kubectl --context kubernetes-admin@kubernetes get crds | grep -E &#39;^workflows\.&#39;</span>
+</code></pre></div>
+
+Example output:
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="go">workflows.argoproj.io                                               2022-09-16T14:21:54Z</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="go">workflows.dataworkflowservices.github.io                            2023-09-28T19:20:23Z</span>
+</code></pre></div>
+</details>
+
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://slurm.schedmd.com/burst_buffer.html">Slurm Burst Buffer Guide</a> </li>
+<li><a href="https://slurm.schedmd.com/burst_buffer.conf.html">Slurm burst_buffer.conf manage</a></li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../" class="md-footer__link md-footer__link--prev" aria-label="Previous: User Guides">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                User Guides
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../errors/readme/" class="md-footer__link md-footer__link--next" aria-label="Next: Workflow Errors">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Workflow Errors
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; Copyright 2023 Hewlett Packard Enterprise Development LP
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.726fbb30.min.js"></script>
+      
+    
+  </body>
+</html>
