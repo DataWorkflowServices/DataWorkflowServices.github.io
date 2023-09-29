@@ -5,62 +5,191 @@ categories: install
 
 # DWS On CSM: Installation and use of DWS on a CSM cluster
 
+DataWorkflowServices (DWS) on CSM consists of two parts.  The first part is the DWS service itself, which must be installed on the CSM cluster.  The second part is the Slurm Burst Buffer Plugin which must be installed on the system where Slurm is running. The Burst Buffer Plugin is used by Slurm to talk to the DWS API.
+
+## Prepare For Install Or Upgrade of DWS
+
+If DWS is not yet installed on the CSM cluster, then proceed to the **Install DWS** section.
+
+If DWS is already installed on the CSM cluster then that version must be undeployed before the next version can be installed.  This is necessary to properly handle updates to the DWS Custom Resource Definitions (CRDs).  Proceed to the **Undeploy DWS** section before returning here to install the new version.
+
 ## Install DWS
 
-### DWS Dependencies
-
-Install the DWS dependencies and set the expected node labels prior to installing DWS.
-
-<details>
-<summary>DWS Dependencies</summary>
-    DWS requires kube-rbac-proxy to be present in the cluster's container registry.
-
-```console title="ncn-m001:~ #"
-podman run --rm --network host quay.io/skopeo/stable:v1.4.1 copy --dest-tls-verify=false docker://gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0 docker://registry.local/kube-rbac-proxy:v0.13.0
-```
-
-DWS will be deployed on a kubernetes worker node labeled with `cray.wlm.manager`.
-
-```console title="ncn-m001:~ #"
-kubectl label node ncn-w001 cray.wlm.manager=true
-```
-</details>
 
 ### Retrieve DWS Configuration and Container Image
 
-The DWS Configuration is in the DWS repo.  We don't need to build DWS here, but we do need its configuration files from the repo.  This is where we will get the DWS CRDs, Deployment, ServiceAccount, Roles and bindings, Services, and Secrets.
+The DWS Configuration is in the DWS repo.  It is not necessary to build DWS, but this is where its configuration files will be found.  These include the DWS CRDs, Deployment, ServiceAccount, Roles and bindings, Services, and Secrets.
 
 ```console title="ncn-m001:~ #"
-DWS_VER=0.0.6
-git clone --branch v$DWS_VER https://github.com/HewlettPackard/dws.git
-cd dws
+DWS_VER=0.0.14
+git clone --branch v$DWS_VER https://github.com/DataWorkflowServices/dws.git dws-$DWS_VER
+cd dws-$DWS_VER
 ```
 
-Get the DWS container image corresponding to this repo.  This must be made present in the cluster's container registry.
+This workarea must be preserved.  It will be used again when this version of DWS must be undeployed.
+
+### Load the DWS Container Images
+
+DWS uses two container images which must be loaded into the CSM cluster's container registry. The Nexus Admin Credential will be used to push these images into the registry.
+
+Obtain the Nexus Admin user name.  Store it in a variable to be used in later commandlines:
 
 ```console title="ncn-m001:~/dws #"
-podman run --rm --network host quay.io/skopeo/stable:v1.4.1 copy --dest-tls-verify=false docker://ghcr.io/hewlettpackard/dws:$DWS_VER docker://registry.local/dws:$DWS_VER
+NEXUS_USER=$(kubectl get secret -n nexus nexus-admin-credential -o json | jq .data.username -r | base64 -d)
+```
+
+Obtain the Nexus Admin password.  Keep this output available so it can be used with cut-and-paste when podman requests the password:
+
+```console title="ncn-m001:~/dws #"
+kubectl get secret -n nexus nexus-admin-credential -o json | jq .data.password -r | base64 -d
+```
+
+Use the Nexus Admin user name and password to load the container images into the container registry.  Adjust or replace the following `podman pull` commands as necessary, depending on your network restrictions, to copy each container in from `ghcr.io`.
+
+Get the DWS container image corresponding to this repo:
+
+```console title="ncn-m001:~/dws #"
+podman pull ghcr.io/dataworkflowservices/dws:$DWS_VER
+podman tag ghcr.io/dataworkflowservices/dws:$DWS_VER registry.local/dws:$DWS_VER
+podman push --creds $NEXUS_USER registry.local/dws:$DWS_VER
+```
+
+Get the kube-rbac-proxy container:
+
+```console title="ncn-m001:~ #"
+podman pull docker://gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0
+podman tag gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0 registry.local/kube-rbac-proxy:v0.13.0
+podman push --creds $NEXUS_USER registry.local/kube-rbac-proxy:v0.13.0
 ```
 
 ### Deploy DWS to the cluster
 
-Deploy DWS to the cluster.  Set `IMAGE_TAG_BASE` to point at the DWS image in the cluster's container registry from the previous step.  Set the `OVERLAY=csm` to pick the configuration for CSM clusters.
+Deploy DWS to the cluster:
 
 ```console title="ncn-m001:~/dws #"
-IMAGE_TAG_BASE=registry.local/dws OVERLAY=csm make deploy
+kubectl apply -k config/csm
 ```
 
-Wait for the deployment to become ready.
+Wait for the deployment and webhook to become ready.
 
 ```console title="ncn-m001:~/dws #"
-kubectl wait deployment --timeout=60s -n dws-operator-system --for condition=Available=True dws-operator-controller-manager
+kubectl wait deployment --timeout=120s -n dws-system dws-controller-manager --for condition=Available=True
+kubectl wait deployment --timeout=120s -n dws-system dws-webhook --for condition=Available=True
 ```
 
-To undeploy DWS, after all Workflow resources have been deleted:
+## Undeploy DWS
+
+All Slurm jobs must be completed before DWS can be undeployed.  In addition, all DWS Workflow resources must have been deleted.
+
+Use the same workarea that was used to install DWS.  It should still be set to the same version of DWS that will be undeployed.
+
+Confirm that all DWS Workflow resources have been deleted:
 
 ```console title="ncn-m001:~/dws #"
-IMAGE_TAG_BASE=registry.local/dws OVERLAY=csm make undeploy
+kubectl get workflows.dataworkflowservices.github.io -A
+No resources found
 ```
+
+If any workflows remain, then some Slurm jobs are not yet completed.  All Slurm jobs must be completed before DWS can be undeployed.
+
+To undeploy DWS:
+
+```console title="ncn-m001:~/dws #"
+kubectl delete -k config/csm
+```
+
+Ignore any errors about not finding secrets.  They were removed by garbage collection during earlier steps in the processing of `kubectl delete`.
+
+## RBAC: Role-Based Access Control
+
+RBAC (Role Based Access Control) determines the operations a user or service can perform on a list of Kubernetes resources. RBAC affects everything that interacts with the kube-apiserver (both users and services internal or external to the cluster). More information about RBAC can be found in the Kubernetes [***documentation***](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+
+This is a Slurm-specific version of the instructions found in [RBAC: Role-Based Access Control](https://nearnodeflash.github.io/guides/rbac-for-users/readme/) for interacting with DWS. Consult that document for more details.
+
+### RBAC for Burst Buffer Plugin
+
+A workload manager (WLM) such as Slurm will interact with DataWorkflowServices as a privileged user. RBAC is used to limit the operations that a WLM can perform:
+
+- Generate a new key/cert pair for a "slurm-dws" user
+- Creating a new kubeconfig file
+- Adding RBAC rules for the "slurm-dws" user to allow appropriate access to the DataWorkflowServices API.
+
+**Note** Each of these steps must be performed on the CSM management node.
+
+### Generate a Key and Certificate
+
+The first step is to create a new key and certificate for the "slurm-dws" user.  This will likely be done on one of the CSM management nodes. The `openssl` command needs access to the certificate authority file. This is typically located in `/etc/kubernetes/pki`.
+
+```console title="ncn-m001:~/dws #"
+# make a temporary work space
+mkdir /tmp/slurm-dws
+cd /tmp/slurm-dws
+
+# Create this user
+export USERNAME=slurm-dws
+
+# generate a new key
+openssl genrsa -out slurm-dws.key 2048
+
+# create a certificate signing request for this user
+openssl req -new -key slurm-dws.key -out slurm-dws.csr -subj "/CN=$USERNAME"
+
+# generate a certificate using the certificate authority on the k8s cluster. This certificate lasts 500 days
+openssl x509 -req -in slurm-dws.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out slurm-dws.crt -days 500
+```
+
+### Create a kubeconfig
+
+After the keys have been generated, a new kubeconfig file can be created for this user. The admin kubeconfig `/etc/kubernetes/admin.conf` can be used to determine the cluster name kube-apiserver address.
+
+```console title="ncn-m001:~/dws #"
+# get the cluster name and server
+CURRENT_CONTEXT=$(kubectl config current-context)
+CLUSTER_NAME=$(kubectl config get-contexts | grep $CURRENT_CONTEXT | awk '{print $3}')
+SERVER=$(kubectl config view -o jsonpath='{.clusters[?(@.name == "'$CLUSTER_NAME'")].cluster.server}')
+
+# create a new kubeconfig with the server information
+kubectl config set-cluster $CLUSTER_NAME --kubeconfig=slurm-dws.kubeconfig --server=$SERVER --certificate-authority=/etc/kubernetes/pki/ca.crt --embed-certs=true
+
+# add the key and cert for this user to the config
+kubectl config set-credentials $USERNAME --kubeconfig=slurm-dws.kubeconfig --client-certificate=slurm-dws.crt --client-key=slurm-dws.key --embed-certs=true
+
+# add a context
+kubectl config set-context $USERNAME --kubeconfig=slurm-dws.kubeconfig --cluster=$CLUSTER_NAME --user=$USERNAME
+
+# make it the default context
+kubectl config use-context $USERNAME --kubeconfig slurm-dws.kubeconfig
+```
+
+**Important** This new kubeconfig file must be installed as `/etc/slurm/slurm-dws.kubeconfig` on the system that has slurmctld and the burst buffer plugin.
+
+### Apply the provided ClusterRole and create a ClusterRoleBinding
+
+DataWorkflowServices has already defined the role to be used with WLMs.  Simply apply the `workload-manager` ClusterRole from DataWorkflowServices to the system, found in the dws repo that was checked out earlier:
+
+```console title="ncn-m001:~/dws #"
+kubectl apply -f config/rbac/workload_manager_role.yaml
+```
+
+Create and apply a ClusterRoleBinding to associate the "slurm-dws" user with the `workload-manager` ClusterRole:
+
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: slurm-dws-viewer
+subjects:
+- kind: User
+  name: slurm-dws
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: workload-manager
+  apiGroup: rbac.authorization.k8s.io
+```
+
+That resource can be created using the `kubectl apply` command.
 
 ## Configure Slurm for DWS
 
@@ -68,86 +197,56 @@ Slurm provides an API for burst buffer plugins that it uses to talk to a workloa
 
 This project will install two files into the slurm pod's `/etc/slurm` directory and will update the main Slurm configuration file to enable the plugin.  The first will be the Lua plugin script, named `burst_buffer.lua`, and the second will be a configuration file named `burst_buffer.conf` which tells Slurm that job scripts containing a `#DW` directive should be run through the burst_buffer plugin.
 
-### HPE Cray Programming Environment Installation Guide
+The burst buffer plugin will use the `kubectl` command to access the Kubernetes environment where DWS is running, so the system running the slurmctld must have this command and a valid `kubeconfig` file installed as `/etc/slurm/slurm-dws.kubeconfig`. See [RBAC: Role-Based Access Control](#rbac-role-based-access-control) above for the creation of this kubeconfig file.
 
-The following instructions use section 10.3.2 in [HPE Cray Programming Environment Installation Guide: CSM on HPE Cray EX Systems (22.10) S-8003](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00126783en_us).
+### Checkout the DWS Slurm Burst Buffer Plugin repo
 
-### Checkout the DWS repo for Slurm plugins.
+On the Slurm system running slurmctl, check out the repo containing the burst buffer plugin and its configuration file:
 
-```console title="ncn-m001:~ #"
-git clone https://github.com/DataWorkflowServices/dws-slurm-bb-plugin.git
+```console
+BBPLUGIN_VER=0.0.2
+git clone --branch v$BBPLUGIN_VER https://github.com/DataWorkflowServices/dws-slurm-bb-plugin.git dws-slurm-bb-plugin-$BBPLUGIN_VER
+cd dws-slurm-bb-plugin-$BBPLUGIN_VER
 ```
 
-### Update the Slurm Configuration Template
+### Install the burst buffer plugin
 
-The changes to the Slurm pod's `/etc/slurm` directory are controlled through a ConfigMap.  These instructions follow section 10.3.2 in [HPE Cray Programming Environment Installation Guide: CSM on HPE Cray EX Systems (22.10) S-8003](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00126783en_us) to update and activate the ConfigMap.
+Copy the burst buffer plugin and its configuration file into the Slurm configuration directory from the repo you've checked out above:
 
-Get the slurm-config-templates ConfigMap.
-
-```console title="ncn-m001:~ #"
-kubectl get configmap -n services slurm-config-templates -o yaml > slurm-config-templates.yaml
+```console title="~/dws-slurm-bb-plugin #"
+cp src/burst_buffer/burst_buffer.lua /etc/slurm
+cp src/burst_buffer/burst_buffer.conf /etc/slurm
 ```
 
-Extract the `slurm.conf` file, update it to enable the burst buffer plugin, and write it back into the ConfigMap.
+### Enable the burst buffer plugin
 
-```console title="ncn-m001:~ #"
-yq r slurm-config-templates.yaml 'data."slurm.conf"' > slurm.conf
-echo "BurstBufferType=burst_buffer/lua" >> slurm.conf
-yq w -i slurm-config-templates.yaml 'data."slurm.conf"' "$(cat slurm.conf)"
+On the system running slurmctld, edit `/etc/slurm/slurm.conf` to enable the use of the burst buffer plugin.
+
+```console title="~/dws-slurm-bb-plugin #"
+echo "BurstBufferType=burst_buffer/lua" >> /etc/slurm/slurm.conf
 ```
 
-Add the `burst_buffer.lua` plugin script and `burst_buffer.conf` configuration file to the ConfigMap.
+Then restart slurmctld to pick up the new configuration.
 
-```console title="ncn-m001:~ #"
-yq w -i slurm-config-templates.yaml -- 'data."burst_buffer.lua"' "$(cat dws-slurm-bb-plugin/src/burst_buffer/burst_buffer.lua)"
-yq w -i slurm-config-templates.yaml 'data."burst_buffer.conf"' "$(cat dws-slurm-bb-plugin/src/burst_buffer/burst_buffer.conf)"
+## Prepare to submit a test job
+
+From the Slurm system that has slurmctld, where the burst buffer plugin will run, verify that the `/etc/slurm/slurm-dws.kubeconfig` file that was created earlier is available by verifying that it can be used to reach the DWS API:
+
+```console
+kubectl --kubeconfig /etc/slurm/slurm-dws.kubeconfig get workflows.dataworkflowservices.github.io -A
 ```
 
-Apply the updated ConfigMap resource.
+There should be no workflows and you should see only the following output:
 
-```console title="ncn-m001:~ #"
-kubectl apply -f slurm-config-templates.yaml
-```
-
-### Restart the Slurm Configuration Job
-
-The Slurm configuration job will process the ConfigMap into a second one that is included in the pod spec.  The following steps to reconfigure Slurm are found in the HPE Cray Programming Installation Guide.
-
-```console title="ncn-m001:~ #"
-JOBNAME=$(kubectl get job -n services | grep slurm-config | grep -v import | awk '{print $1}')
-kubectl get job -n services -o yaml $JOBNAME > slurm-config.yaml
-kubectl delete -f slurm-config.yaml
-yq d -i slurm-config.yaml spec.template.metadata
-yq d -i slurm-config.yaml spec.selector
-kubectl apply -f slurm-config.yaml
-SLURMCTLD_POD=$(kubectl get pod -n user -lapp=slurmctld -o jsonpath='{.items[0].metadata.name}')
-kubectl exec -n user $SLURMCTLD_POD -c slurmctld -- scontrol reconfigure
-```
-
-After the configuration job has been restarted, wait about 30 seconds to see the new content appear inside the pod.
-
-If you were only adding or modifying burst_buffer.lua, then Slurm is now ready for your jobs.  If you were also modifying slurm.conf to set the BurstBufferType, or you were adding or modifying burst_buffer.conf, then you must also restart the Slurm deployments.
-
-```console title="ncn-m001:~ #"
-kubectl rollout restart deployment -n user slurmctld-backup
-kubectl wait deployment --timeout=60s -n user --for condition=Available=True -l app=slurmctld-backup
-kubectl rollout restart deployment -n user slurmctld
-kubectl wait deployment --timeout=60s -n user --for condition=Available=True -l app=slurmctld
+```console
+No resources found
 ```
 
 ## Submit a test job
 
-Use a UAN host to submit a test job.  The following assumes a UAN host named `uan01` and a user account named `vers`.
-
-```console
-ncn-m001:~ # ssh uan01
-uan01:~ # su vers
-vers@uan01:/root> cd /lus/vers
-```
-
 Create the following example test job:
 
-```conf title="vers@uan01:/lus/vers> cat /tmp/dws-test" linenums="1"
+```conf title="$ cat /tmp/dws-test" linenums="1"
 #!/bin/sh                
 #SBATCH --time=1
 #DW
@@ -156,29 +255,21 @@ srun -l /bin/hostname
 srun -l /bin/pwd
 ```
 
-Note that we will submit the test job from a directory where our `vers` account can write its output files.  The output file location can be controlled by the `sbatch` command or by an `SBATCH` directive in the job script.
+Submit the test job:
 
-
-```console title="vers@uan01:/lus/vers>"
+```console
 sbatch /tmp/dws-test
 ```
 
-The sbatch command will tell you the ID of your job.
+Get the DWS Workflow via `kubectl`, running from the Slurm system that has slurmctld.  If this step fails then return to [Prepare to submit a test job](#prepare-to-submit-a-test-job) to verify the correct kubectl configuration.
+
 ```console
-Submitted batch job 7773
+kubectl --kubeconfig /etc/slurm/slurm-dws.kubeconfig get workflows.dataworkflowservices.github.io -A
 ```
 
-You can use that to query the job's status.  In this example the job's output will be in the file named `slurm-<ID>` in the same directory where the `sbatch` command was executed.
+Get the status of the DWS Workflow via `scontrol`.  This will cause Slurm to use the burst buffer plugin to access the DWS API, and will use `kubectl` under the covers:
 
-```console title="vers@uan01:/lus/vers> "
-sacct -b -j 7773
-scontrol show job 7773
-cat slurm-7773.out
-```
-
-Get the status of the workflow.
-
-```console title="vers@uan01:/lus/vers>"
+```console
 scontrol show bbstat workflow 7773 && echo
 ```
 
@@ -202,26 +293,15 @@ Consult the [Slurm Burst Buffer Guide](https://slurm.schedmd.com/burst_buffer.ht
 
 ### Collect slurmctld logs
 
-To collect the slurmctld logs:
-
-```console title="ncn-m001:~ #"
-SLURM_POD=`kubectl get pods -n user -l app=slurmctld -o jsonpath='{.items[0].metadata.name}'`
-kubectl logs -n user $SLURM_POD slurmctld
-```
-
-To pick out the messages from the burst_buffer.lua script:
-
-```console title="ncn-m001:~ #"
-kubectl logs -n user $SLURM_POD slurmctld | grep lua:
-```
+To pick out the burst buffer plugin messages from slurmctld logs, grep for the string "lua".
 
 ### Collect DWS logs
 
-The DWS logs can be retrieved with the following:
+The DWS logs can be retrieved with the following.  These commands should be run from the CSM management node.  Run the `kubectl` command using the adminstrator context:
 
 ```console title="ncn-m001:~ #"
-DWS_POD=`kubectl get pods -n dws-operator-system -l control-plane=controller-manager -o jsonpath='{.items[0].metadata.name}'`
-kubectl logs -n dws-operator-system $DWS_POD -c manager
+DWS_POD=`kubectl --context kubernetes-admin@kubernetes get pods -n dws-system -l control-plane=controller-manager -o jsonpath='{.items[0].metadata.name}'`
+kubectl --context kubernetes-admin@kubernetes logs -n dws-system $DWS_POD -c manager
 ```
 
 ### Inspect DWS Workflow resources
@@ -229,7 +309,7 @@ kubectl logs -n dws-operator-system $DWS_POD -c manager
 Inspect DWS Workflow resources by using the fully-qualified CRD name.
 
 ```console title="ncn-m001:~ #"
-kubectl get workflows.dws.cray.hpe.com -A
+kubectl --context kubernetes-admin@kubernetes get workflows.dataworkflowservices.github.io -A
 ```
 
 The output will show the job ID used in the name of the Workflow resource:
@@ -243,7 +323,7 @@ user        bb7773   DataIn   true    Completed   13m
 To get more detail about the workflow while it exists:
 
 ```console title="ncn-m001:~ #"
-kubectl get workflow.dws.cray.hpe.com -n user bb7773 -o yaml
+kubectl --context kubernetes-admin@kubernetes get workflow.dataworkflowservices.github.io -n user bb7773 -o yaml
 ```
 
 Note that the Workflow resource will be deleted during the job's teardown state, at which time it will no longer appear in the workflow listing.
@@ -255,20 +335,19 @@ Note that the Workflow resource will be deleted during the job's teardown state,
 Your system may have multiple CRDs named "Workflow".  To see the CRDs named "Workflow":
 
 ```console title="ncn-m001:~ #"
-kubectl get crds | grep -E '^workflows\.'
+kubectl --context kubernetes-admin@kubernetes get crds | grep -E '^workflows\.'
 ```
 
 Example output:
 
 ```console
-workflows.argoproj.io                            2022-11-25T02:56:48Z
-workflows.dws.cray.hpe.com                       2022-11-21T15:38:13Z
+workflows.argoproj.io                                               2022-09-16T14:21:54Z
+workflows.dataworkflowservices.github.io                            2023-09-28T19:20:23Z
 ```
 </details>
 
 ## References
 
-* Section 10.3.2 of [HPE Cray Programming Environment Installation Guide: CSM on HPE Cray EX Systems (22.10) S-8003](https://support.hpe.com/hpesc/public/docDisplay?docLocale=en_US&docId=a00126783en_us)
 * [Slurm Burst Buffer Guide](https://slurm.schedmd.com/burst_buffer.html) 
 * [Slurm burst_buffer.conf manage](https://slurm.schedmd.com/burst_buffer.conf.html)
 
