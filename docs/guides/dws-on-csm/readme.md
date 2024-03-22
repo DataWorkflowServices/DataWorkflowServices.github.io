@@ -21,7 +21,7 @@ If DWS is already installed on the CSM cluster then that version must be undeplo
 The DWS Configuration is in the DWS repo.  It is not necessary to build DWS, but this is where its configuration files will be found.  These include the DWS CRDs, Deployment, ServiceAccount, Roles and bindings, Services, and Secrets.
 
 ```console title="ncn-m001:~ #"
-DWS_VER=0.0.14
+DWS_VER=0.0.19
 git clone --branch v$DWS_VER https://github.com/DataWorkflowServices/dws.git dws-$DWS_VER
 cd dws-$DWS_VER
 ```
@@ -204,7 +204,7 @@ The burst buffer plugin will use the `kubectl` command to access the Kubernetes 
 On the Slurm system running slurmctl, check out the repo containing the burst buffer plugin and its configuration file:
 
 ```console
-BBPLUGIN_VER=0.0.2
+BBPLUGIN_VER=0.0.4
 git clone --branch v$BBPLUGIN_VER https://github.com/DataWorkflowServices/dws-slurm-bb-plugin.git dws-slurm-bb-plugin-$BBPLUGIN_VER
 cd dws-slurm-bb-plugin-$BBPLUGIN_VER
 ```
