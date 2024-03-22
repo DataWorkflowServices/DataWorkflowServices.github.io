@@ -1036,7 +1036,7 @@
 <h2 id="install-dws">Install DWS</h2>
 <h3 id="retrieve-dws-configuration-and-container-image">Retrieve DWS Configuration and Container Image</h3>
 <p>The DWS Configuration is in the DWS repo.  It is not necessary to build DWS, but this is where its configuration files will be found.  These include the DWS CRDs, Deployment, ServiceAccount, Roles and bindings, Services, and Secrets.</p>
-<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">DWS_VER=0.0.14</span>
+<div class="highlight"><span class="filename">ncn-m001:~ #</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">DWS_VER=0.0.19</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">git clone --branch v$DWS_VER https://github.com/DataWorkflowServices/dws.git dws-$DWS_VER</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">cd dws-$DWS_VER</span>
 </code></pre></div>
@@ -1155,7 +1155,7 @@
 <p>The burst buffer plugin will use the <code>kubectl</code> command to access the Kubernetes environment where DWS is running, so the system running the slurmctld must have this command and a valid <code>kubeconfig</code> file installed as <code>/etc/slurm/slurm-dws.kubeconfig</code>. See <a href="#rbac-role-based-access-control">RBAC: Role-Based Access Control</a> above for the creation of this kubeconfig file.</p>
 <h3 id="checkout-the-dws-slurm-burst-buffer-plugin-repo">Checkout the DWS Slurm Burst Buffer Plugin repo</h3>
 <p>On the Slurm system running slurmctl, check out the repo containing the burst buffer plugin and its configuration file:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="go">BBPLUGIN_VER=0.0.2</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="go">BBPLUGIN_VER=0.0.4</span>
 <a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="go">git clone --branch v$BBPLUGIN_VER https://github.com/DataWorkflowServices/dws-slurm-bb-plugin.git dws-slurm-bb-plugin-$BBPLUGIN_VER</span>
 <a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="go">cd dws-slurm-bb-plugin-$BBPLUGIN_VER</span>
 </code></pre></div>
